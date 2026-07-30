@@ -122,24 +122,21 @@ class DragonTigerCounter {
         return (8 - this.getDecksUsed()).toFixed(1);
     }
     
-    getRunningCount() {
-        // Conteo basado en tendencia: más dragones = negativo
+    getDifferencePercentage() {
+        // Calcula diferencia porcentual: Tigres % - Dragones %
         const total = this.getTotalHands();
         if (total === 0) return 0;
         
-        const dragPct = this.getTotalDragons() / total;
-        const tigerPct = this.getTotalTigers() / total;
+        const dragPct = (this.getTotalDragons() / total) * 100;
+        const tigerPct = (this.getTotalTigers() / total) * 100;
         
-        // Si dragones > 50%, es negativo (ventaja a tigre después)
-        // Si tigres > 50%, es positivo (ventaja a dragón después)
-        return Math.round((tigerPct - dragPct) * 50);
+        // Resultado: +13 significa 13% más tigres, -13 significa 13% más dragones
+        return tigerPct - dragPct;
     }
     
     getTrueCount() {
-        const decksLeft = parseFloat(this.getDecksRemaining());
-        if (decksLeft <= 0) return 0;
-        const rc = this.getRunningCount();
-        return (rc / decksLeft).toFixed(1);
+        // True Count simplificado: diferencia porcentual
+        return this.getDifferencePercentage().toFixed(1);
     }
     
     updateSignal() {
@@ -147,18 +144,19 @@ class DragonTigerCounter {
         const signal = document.getElementById('signal');
         signal.className = 'signal';
         
-        if (tc >= 4) {
-            signal.textContent = '🐉 DRAGÓN';
-            signal.classList.add('signal-dragon');
-        } else if (tc <= -4) {
+        // Si tigres están +10% o más por encima → TIGRE
+        // Si dragones están +10% o más por encima → DRAGÓN
+        // Si diferencia < 10% → ESPERA
+        
+        if (tc >= 10) {
             signal.textContent = '🐅 TIGRE';
             signal.classList.add('signal-tiger');
-        } else if (tc > -3 && tc < 3) {
+        } else if (tc <= -10) {
+            signal.textContent = '🐉 DRAGÓN';
+            signal.classList.add('signal-dragon');
+        } else {
             signal.textContent = '⏸️ ESPERA';
             signal.classList.add('signal-wait');
-        } else {
-            signal.textContent = '-';
-            signal.classList.add('signal-neutral');
         }
     }
     
