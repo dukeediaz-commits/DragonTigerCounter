@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Tiger Counter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐉 Dragon Tiger 🐅</h1>
+            <p>Contador de Cartas</p>
+        </div>
+
+        <div class="stats-box">
+            <div class="stat">
+                <span class="label">Running Count</span>
+                <span class="value" id="runningCount">0</span>
+            </div>
+            <div class="stat">
+                <span class="label">Mazos Restantes</span>
+                <span class="value" id="decksLeft">8.0</span>
+            </div>
+            <div class="stat">
+                <span class="label">True Count</span>
+                <span class="value highlight" id="trueCount">0</span>
+            </div>
+        </div>
+
+        <div class="signal-box">
+            <div id="signal" class="signal-neutral">-</div>
+        </div>
+
+        <div class="buttons-container">
+            <button class="card-btn dragon" id="dragonBtn" data-card="D">🐉 DRAGÓN</button>
+            <button class="card-btn tie" id="tieBtn" data-card="E">EMPATE</button>
+            <button class="card-btn tiger" id="tigerBtn" data-card="T">🐅 TIGRE</button>
+        </div>
+
+        <div class="result-buttons">
+            <button class="result-btn win" id="winBtn">✓ GANÉ</button>
+            <button class="result-btn lose" id="loseBtn">✗ PERDÍ</button>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" id="resetBtn">🔄 Resetear Conteo</button>
+            <button class="control-btn" id="shuffleBtn">🔁 Mezcla (Divisor)</button>
+        </div>
+
+        <div class="history-box">
+            <h3>Historial</h3>
+            <div id="historyStats">
+                <p>Manos jugadas: <span id="handCount">0</span></p>
+                <p>Ganadas: <span id="winsCount">0</span></p>
+                <p>Perdidas: <span id="lossCount">0</span></p>
+                <p>Saldo: <span id="balance">0</span></p>
+            </div>
+            <button class="control-btn" id="clearHistoryBtn">🗑️ Limpiar Historial</button>
+        </div>
+
+        <div class="info-box">
+            <h4>ℹ️ Cómo funciona</h4>
+            <ul>
+                <li>Toca el botón de cada carta que sale</li>
+                <li>True Count >= +4: apuesta DRAGÓN/TIGRE</li>
+                <li>True Count <= -4: apuesta TIGRE/DRAGÓN (opuesto)</li>
+                <li>True Count entre -3 y +3: espera o apuesta mínimo</li>
+                <li>Cuando aparezca el DIVISOR, toca "Mezcla"</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
