@@ -144,14 +144,13 @@ class DragonTigerCounter {
         const signal = document.getElementById('signal');
         signal.className = 'signal';
         
-        // Si tigres están +10% o más por encima → TIGRE
-        // Si dragones están +10% o más por encima → DRAGÓN
-        // Si diferencia < 10% → ESPERA
+        // Umbral bajo: detecta tendencia rápido (±6%)
+        // Así con 30-40 manos ya da señal si hay diferencia clara
         
-        if (tc >= 10) {
+        if (tc >= 6) {
             signal.textContent = '🐅 TIGRE';
             signal.classList.add('signal-tiger');
-        } else if (tc <= -10) {
+        } else if (tc <= -6) {
             signal.textContent = '🐉 DRAGÓN';
             signal.classList.add('signal-dragon');
         } else {
