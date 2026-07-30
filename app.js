@@ -144,13 +144,14 @@ class DragonTigerCounter {
         const signal = document.getElementById('signal');
         signal.className = 'signal';
         
-        // Umbral bajo: detecta tendencia rápido (±6%)
-        // Así con 30-40 manos ya da señal si hay diferencia clara
+        // Umbral ±5%: detecta tendencia rápido pero sin ser nervioso
+        // Con 30-40 manos da señal si hay diferencia clara
+        // Cambia cuando la tendencia se invierte realmente
         
-        if (tc >= 6) {
+        if (tc >= 5) {
             signal.textContent = '🐅 TIGRE';
             signal.classList.add('signal-tiger');
-        } else if (tc <= -6) {
+        } else if (tc <= -5) {
             signal.textContent = '🐉 DRAGÓN';
             signal.classList.add('signal-dragon');
         } else {
