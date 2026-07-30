@@ -3,71 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dragon Tiger Counter</title>
+    <title>Dragon Tiger Counter v2</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🐉 Dragon Tiger 🐅</h1>
-            <p>Contador de Cartas</p>
+            <p>Contador Inteligente</p>
         </div>
 
-        <div class="stats-box">
-            <div class="stat">
-                <span class="label">Running Count</span>
-                <span class="value" id="runningCount">0</span>
+        <!-- MODAL DE INICIO -->
+        <div id="setupModal" class="modal active">
+            <div class="modal-content">
+                <h2>📊 Datos Históricos</h2>
+                <p>Ingresa los números de la sesión anterior/históricos</p>
+                
+                <div class="input-group">
+                    <label>🐉 Dragones:</label>
+                    <input type="number" id="histDragons" value="0" min="0">
+                </div>
+                
+                <div class="input-group">
+                    <label>🐅 Tigres:</label>
+                    <input type="number" id="histTigers" value="0" min="0">
+                </div>
+                
+                <div class="input-group">
+                    <label>EMPATE:</label>
+                    <input type="number" id="histTies" value="0" min="0">
+                </div>
+                
+                <button class="start-btn" id="startBtn">▶️ COMENZAR SESIÓN</button>
             </div>
-            <div class="stat">
-                <span class="label">Mazos Restantes</span>
-                <span class="value" id="decksLeft">8.0</span>
+        </div>
+
+        <!-- PANTALLA PRINCIPAL DE JUEGO -->
+        <div id="gameScreen" class="hidden">
+            <div class="stats-box">
+                <div class="stat">
+                    <span class="label">True Count</span>
+                    <span class="value highlight" id="trueCount">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Total Manos</span>
+                    <span class="value" id="totalHands">0</span>
+                </div>
+                <div class="stat">
+                    <span class="label">Saldo</span>
+                    <span class="value" id="balance">0</span>
+                </div>
             </div>
-            <div class="stat">
-                <span class="label">True Count</span>
-                <span class="value highlight" id="trueCount">0</span>
+
+            <div class="signal-box">
+                <div id="signal" class="signal-neutral">-</div>
+            </div>
+
+            <div class="buttons-container">
+                <button class="card-btn dragon" id="dragonBtn">🐉 D</button>
+                <button class="card-btn tie" id="tieBtn">E</button>
+                <button class="card-btn tiger" id="tigerBtn">🐅 T</button>
+            </div>
+
+            <div class="result-buttons">
+                <button class="result-btn win" id="winBtn">✓ GANÉ</button>
+                <button class="result-btn lose" id="loseBtn">✗ PERDÍ</button>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" id="shuffleBtn">🔁 Mezcla</button>
+                <button class="control-btn" id="statsBtn">📊 Estadísticas</button>
+                <button class="control-btn" id="exitBtn">🏠 Salir</button>
+            </div>
+
+            <div class="info-box">
+                <h4>Conteo Actual</h4>
+                <p>D: <span id="currentDragons">0</span> | T: <span id="currentTigers">0</span> | E: <span id="currentTies">0</span></p>
             </div>
         </div>
 
-        <div class="signal-box">
-            <div id="signal" class="signal-neutral">-</div>
-        </div>
-
-        <div class="buttons-container">
-            <button class="card-btn dragon" id="dragonBtn" data-card="D">🐉 DRAGÓN</button>
-            <button class="card-btn tie" id="tieBtn" data-card="E">EMPATE</button>
-            <button class="card-btn tiger" id="tigerBtn" data-card="T">🐅 TIGRE</button>
-        </div>
-
-        <div class="result-buttons">
-            <button class="result-btn win" id="winBtn">✓ GANÉ</button>
-            <button class="result-btn lose" id="loseBtn">✗ PERDÍ</button>
-        </div>
-
-        <div class="controls">
-            <button class="control-btn" id="resetBtn">🔄 Resetear Conteo</button>
-            <button class="control-btn" id="shuffleBtn">🔁 Mezcla (Divisor)</button>
-        </div>
-
-        <div class="history-box">
-            <h3>Historial</h3>
-            <div id="historyStats">
-                <p>Manos jugadas: <span id="handCount">0</span></p>
-                <p>Ganadas: <span id="winsCount">0</span></p>
-                <p>Perdidas: <span id="lossCount">0</span></p>
-                <p>Saldo: <span id="balance">0</span></p>
+        <!-- ESTADÍSTICAS -->
+        <div id="statsScreen" class="hidden">
+            <div class="header">
+                <h2>📊 Estadísticas</h2>
             </div>
-            <button class="control-btn" id="clearHistoryBtn">🗑️ Limpiar Historial</button>
-        </div>
-
-        <div class="info-box">
-            <h4>ℹ️ Cómo funciona</h4>
-            <ul>
-                <li>Toca el botón de cada carta que sale</li>
-                <li>True Count >= +4: apuesta DRAGÓN/TIGRE</li>
-                <li>True Count <= -4: apuesta TIGRE/DRAGÓN (opuesto)</li>
-                <li>True Count entre -3 y +3: espera o apuesta mínimo</li>
-                <li>Cuando aparezca el DIVISOR, toca "Mezcla"</li>
-            </ul>
+            <div class="stats-detail">
+                <p>Total Dragones: <span id="statDragons">0</span></p>
+                <p>Total Tigres: <span id="statTigers">0</span></p>
+                <p>Total Empates: <span id="statTies">0</span></p>
+                <p>Manos Totales: <span id="statTotal">0</span></p>
+                <hr>
+                <p>Porcentaje D: <span id="statPercDragons">0%</span></p>
+                <p>Porcentaje T: <span id="statPercTigers">0%</span></p>
+                <p>Porcentaje E: <span id="statPercTies">0%</span></p>
+                <hr>
+                <p>Ganadas: <span id="statWins">0</span></p>
+                <p>Perdidas: <span id="statLosses">0</span></p>
+                <p>Acierto: <span id="statAccuracy">0%</span></p>
+            </div>
+            <button class="control-btn" id="backBtn">← Volver al Juego</button>
         </div>
     </div>
 

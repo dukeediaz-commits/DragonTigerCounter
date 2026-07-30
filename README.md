@@ -1,29 +1,50 @@
-# 🐉 Dragon Tiger Counter 🐅
+# 🐉 Dragon Tiger Counter v2 🐅
 
-Aplicación minimalista para contar cartas en Dragon Tiger en Jugabet.
+Aplicación inteligente para contar cartas en Dragon Tiger en Jugabet.
 
 ## ✨ Características
 
-- **Conteo automático** de cartas (Running Count + True Count)
-- **Señales claras**: cuándo apostar a Dragón, Tigre o esperar
-- **Registro de resultados**: manos jugadas, ganancias/pérdidas
-- **Persistencia**: guarda datos en localStorage (no se pierden al cerrar)
-- **Diseño optimizado para celular**: fácil de usar con una mano
-- **Sin dependencias externas**: HTML, CSS y JavaScript vanilla
+- **Input de datos históricos**: ingresa números de sesiones anteriores
+- **Conteo en vivo**: suma datos históricos + cartas que salen ahora
+- **True Count automático**: recalcula cada vez que agregas una carta
+- **Señales inteligentes**: 🐉 DRAGÓN, 🐅 TIGRE, ⏸️ ESPERA
+- **Solo apuestas ganadoras**: GANÉ/PERDÍ registra solo cuando apostaste
+- **Estadísticas detalladas**: porcentajes, acierto, tendencias
+- **Sin dependencias**: HTML, CSS y JavaScript vanilla
+- **Optimizado para celular**: muy rápido, un dedo
 
 ## 🎮 Cómo usar
 
-1. **Abre la app en el segundo celular** (mientras juegas Dragon Tiger en el primero)
-2. **Toca el botón de cada carta** que sale:
-   - 🐉 DRAGÓN
-   - 🐅 TIGRE
-   - EMPATE
-3. **Lee la señal**:
-   - Rojo 🐉 = Apuesta a DRAGÓN (True Count >= +4)
-   - Amarillo 🐅 = Apuesta a TIGRE (True Count <= -4)
-   - Verde ⏸️ = Espera o apuesta mínimo (True Count entre -3 y +3)
-4. **Registra los resultados**: toca ✓ GANÉ o ✗ PERDÍ
-5. **Cuando veas el DIVISOR**: toca "🔁 Mezcla"
+### SETUP (Primera vez o nueva sesión)
+1. Abre la app
+2. **Ingresa datos históricos** (de Jugabet):
+   - Dragones: `136`
+   - Tigres: `146`
+   - Empates: `18`
+3. Toca **"▶️ COMENZAR SESIÓN"**
+
+### DURANTE EL JUEGO
+1. **Toca el botón de cada carta** que sale:
+   - 🐉 (Dragón)
+   - 🐅 (Tigre)
+   - E (Empate)
+
+2. **Lee la SEÑAL** (pantalla grande):
+   - 🐉 **Rojo** = APUESTA A DRAGÓN (True Count >= +4)
+   - 🐅 **Amarillo** = APUESTA A TIGRE (True Count <= -4)
+   - ⏸️ **Verde** = ESPERA (True Count entre -3 y +3)
+
+3. **Cuando la señal te dice que apuestes**, toca DRAGÓN/TIGRE en Jugabet
+
+4. **Registra el resultado**:
+   - Tocá ✓ GANÉ (si ganaste)
+   - Tocá ✗ PERDÍ (si perdiste)
+
+5. **Sigue contando** más cartas
+
+### ESTADÍSTICAS
+- Toca **"📊 Estadísticas"** para ver porcentajes y acierto
+- La app te dice dónde ganas más
 
 ## 📊 Estadísticas
 

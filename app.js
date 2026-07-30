@@ -1,208 +1,233 @@
 class DragonTigerCounter {
     constructor() {
-        // Conteo
-        this.runningCount = 0;
-        this.cardsDealt = 0;
-        this.totalCards = 8 * 52; // 8 mazos
+        // Datos históricos
+        this.histDragons = 0;
+        this.histTigers = 0;
+        this.histTies = 0;
         
-        // Historial
-        this.handsPlayed = 0;
+        // Conteo en vivo
+        this.liveDragons = 0;
+        this.liveTigers = 0;
+        this.liveTies = 0;
+        
+        // Resultados
         this.wins = 0;
         this.losses = 0;
         this.balance = 0;
         
-        // Elementos del DOM
-        this.elements = {
-            runningCount: document.getElementById('runningCount'),
-            decksLeft: document.getElementById('decksLeft'),
-            trueCount: document.getElementById('trueCount'),
-            signal: document.getElementById('signal'),
-            dragonBtn: document.getElementById('dragonBtn'),
-            tieBtn: document.getElementById('tieBtn'),
-            tigerBtn: document.getElementById('tigerBtn'),
-            winBtn: document.getElementById('winBtn'),
-            loseBtn: document.getElementById('loseBtn'),
-            resetBtn: document.getElementById('resetBtn'),
-            shuffleBtn: document.getElementById('shuffleBtn'),
-            clearHistoryBtn: document.getElementById('clearHistoryBtn'),
-            handCount: document.getElementById('handCount'),
-            winsCount: document.getElementById('winsCount'),
-            lossCount: document.getElementById('lossCount'),
-            balance: document.getElementById('balance')
-        };
+        // Mazos
+        this.totalCards = 8 * 52;
+        
+        // Pantallas
+        this.setupModal = document.getElementById('setupModal');
+        this.gameScreen = document.getElementById('gameScreen');
+        this.statsScreen = document.getElementById('statsScreen');
+        
+        // Botones
+        this.startBtn = document.getElementById('startBtn');
+        this.dragonBtn = document.getElementById('dragonBtn');
+        this.tieBtn = document.getElementById('tieBtn');
+        this.tigerBtn = document.getElementById('tigerBtn');
+        this.winBtn = document.getElementById('winBtn');
+        this.loseBtn = document.getElementById('loseBtn');
+        this.shuffleBtn = document.getElementById('shuffleBtn');
+        this.statsBtn = document.getElementById('statsBtn');
+        this.exitBtn = document.getElementById('exitBtn');
+        this.backBtn = document.getElementById('backBtn');
         
         this.init();
     }
     
     init() {
-        // Cargar datos guardados
-        this.loadFromStorage();
+        this.startBtn.addEventListener('click', () => this.startSession());
+        this.dragonBtn.addEventListener('click', () => this.addCard('D'));
+        this.tieBtn.addEventListener('click', () => this.addCard('E'));
+        this.tigerBtn.addEventListener('click', () => this.addCard('T'));
+        this.winBtn.addEventListener('click', () => this.recordWin());
+        this.loseBtn.addEventListener('click', () => this.recordLoss());
+        this.shuffleBtn.addEventListener('click', () => this.shuffleOccurred());
+        this.statsBtn.addEventListener('click', () => this.showStats());
+        this.exitBtn.addEventListener('click', () => this.exitSession());
+        this.backBtn.addEventListener('click', () => this.hideStats());
+    }
+    
+    startSession() {
+        const dragons = parseInt(document.getElementById('histDragons').value) || 0;
+        const tigers = parseInt(document.getElementById('histTigers').value) || 0;
+        const ties = parseInt(document.getElementById('histTies').value) || 0;
         
-        // Event listeners
-        this.elements.dragonBtn.addEventListener('click', () => this.addCard('D'));
-        this.elements.tieBtn.addEventListener('click', () => this.addCard('E'));
-        this.elements.tigerBtn.addEventListener('click', () => this.addCard('T'));
-        this.elements.winBtn.addEventListener('click', () => this.recordWin());
-        this.elements.loseBtn.addEventListener('click', () => this.recordLoss());
-        this.elements.resetBtn.addEventListener('click', () => this.resetCounting());
-        this.elements.shuffleBtn.addEventListener('click', () => this.shuffleOccurred());
-        this.elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+        this.histDragons = dragons;
+        this.histTigers = tigers;
+        this.histTies = ties;
         
+        this.setupModal.classList.remove('active');
+        this.gameScreen.classList.remove('hidden');
         this.updateUI();
     }
     
-    // Conteo de cartas: sistema Baccarat simplificado
-    getCardValue(card) {
-        // En Dragon Tiger no importa si es D o T
-        // Lo importante es el puntaje de la carta
-        // Pero como solo recibimos D/T/E, asumimos cartas normales
-        // Usaremos un conteo basado en probabilidades
-        
-        // Para simplificar: cada carta tiene valor neutral
-        // Usaremos un conteo alternativo basado en tendencias
-        return 0; // Neutral para Dragon Tiger básico
-    }
-    
-    // Versión mejorada: conteo de tendencias para Dragon Tiger
-    addCard(card) {
-        // En Dragon Tiger puro, contamos basado en el resultado anterior
-        // Si Dragon ganó muchas, TIGRE es más probable (tendencia contraria)
-        
-        if (card === 'D') {
-            this.runningCount -= 1; // Dragón es favorable a Dragón
-            this.balance -= 1; // Descuenta como si fuera carta alta
-        } else if (card === 'T') {
-            this.runningCount += 1; // Tigre es favorable a Tigre
-            this.balance += 1;
-        } else if (card === 'E') {
-            // Empate es neutral
+    exitSession() {
+        if (confirm('¿Terminar sesión?')) {
+            this.setupModal.classList.add('active');
+            this.gameScreen.classList.add('hidden');
+            this.statsScreen.classList.add('hidden');
+            this.resetLiveData();
         }
-        
-        this.cardsDealt += 2; // Dragon Tiger reparte 2 cartas por mano
-        this.saveToStorage();
+    }
+    
+    resetLiveData() {
+        this.liveDragons = 0;
+        this.liveTigers = 0;
+        this.liveTies = 0;
+        this.wins = 0;
+        this.losses = 0;
+        this.balance = 0;
+    }
+    
+    addCard(card) {
+        if (card === 'D') {
+            this.liveDragons++;
+        } else if (card === 'T') {
+            this.liveTigers++;
+        } else if (card === 'E') {
+            this.liveTies++;
+        }
         this.updateUI();
+    }
+    
+    getTotalDragons() {
+        return this.histDragons + this.liveDragons;
+    }
+    
+    getTotalTigers() {
+        return this.histTigers + this.liveTigers;
+    }
+    
+    getTotalTies() {
+        return this.histTies + this.liveTies;
+    }
+    
+    getTotalHands() {
+        return this.getTotalDragons() + this.getTotalTigers() + this.getTotalTies();
+    }
+    
+    getCardsDealt() {
+        return this.getTotalHands() * 2; // Dos cartas por mano
+    }
+    
+    getDecksUsed() {
+        return this.getCardsDealt() / 52;
     }
     
     getDecksRemaining() {
-        return ((this.totalCards - this.cardsDealt) / 52).toFixed(1);
+        return (8 - this.getDecksUsed()).toFixed(1);
+    }
+    
+    getRunningCount() {
+        // Conteo basado en tendencia: más dragones = negativo
+        const total = this.getTotalHands();
+        if (total === 0) return 0;
+        
+        const dragPct = this.getTotalDragons() / total;
+        const tigerPct = this.getTotalTigers() / total;
+        
+        // Si dragones > 50%, es negativo (ventaja a tigre después)
+        // Si tigres > 50%, es positivo (ventaja a dragón después)
+        return Math.round((tigerPct - dragPct) * 50);
     }
     
     getTrueCount() {
         const decksLeft = parseFloat(this.getDecksRemaining());
         if (decksLeft <= 0) return 0;
-        return (this.runningCount / decksLeft).toFixed(1);
+        const rc = this.getRunningCount();
+        return (rc / decksLeft).toFixed(1);
     }
     
     updateSignal() {
-        const trueCount = parseFloat(this.getTrueCount());
-        const signalEl = this.elements.signal;
+        const tc = parseFloat(this.getTrueCount());
+        const signal = document.getElementById('signal');
+        signal.className = 'signal';
         
-        // Limpiar clases
-        signalEl.className = 'signal';
-        
-        if (trueCount >= 4) {
-            signalEl.textContent = '🐉 DRAGÓN';
-            signalEl.classList.add('signal-dragon');
-        } else if (trueCount <= -4) {
-            signalEl.textContent = '🐅 TIGRE';
-            signalEl.classList.add('signal-tiger');
-        } else if (trueCount > -3 && trueCount < 3) {
-            signalEl.textContent = '⏸️ ESPERA';
-            signalEl.classList.add('signal-wait');
+        if (tc >= 4) {
+            signal.textContent = '🐉 DRAGÓN';
+            signal.classList.add('signal-dragon');
+        } else if (tc <= -4) {
+            signal.textContent = '🐅 TIGRE';
+            signal.classList.add('signal-tiger');
+        } else if (tc > -3 && tc < 3) {
+            signal.textContent = '⏸️ ESPERA';
+            signal.classList.add('signal-wait');
         } else {
-            signalEl.textContent = '-';
-            signalEl.classList.add('signal-neutral');
+            signal.textContent = '-';
+            signal.classList.add('signal-neutral');
         }
     }
     
     recordWin() {
-        this.handsPlayed++;
         this.wins++;
-        this.saveToStorage();
+        this.balance++;
         this.updateUI();
         this.flashMessage('✓ ¡Ganaste!', '#4caf50');
     }
     
     recordLoss() {
-        this.handsPlayed++;
         this.losses++;
-        this.saveToStorage();
+        this.balance--;
         this.updateUI();
         this.flashMessage('✗ Perdiste', '#f44336');
     }
     
-    resetCounting() {
-        if (confirm('¿Resetear el conteo? (Sin borrar historial)')) {
-            this.runningCount = 0;
-            this.cardsDealt = 0;
-            this.saveToStorage();
-            this.updateUI();
-            this.flashMessage('🔄 Conteo reseteado', '#00ff88');
-        }
-    }
-    
     shuffleOccurred() {
-        if (confirm('¿Se realizó la mezcla? (Resetear conteo)')) {
-            this.resetCounting();
-            this.flashMessage('🔁 Nueva mezcla', '#ffaa00');
-        }
+        this.flashMessage('🔁 Mezcla registrada', '#ffaa00');
     }
     
-    clearHistory() {
-        if (confirm('¿Limpiar TODO el historial? Esta acción no se puede deshacer')) {
-            this.handsPlayed = 0;
-            this.wins = 0;
-            this.losses = 0;
-            this.balance = 0;
-            this.runningCount = 0;
-            this.cardsDealt = 0;
-            localStorage.removeItem('dragonTigerData');
-            this.updateUI();
-            this.flashMessage('🗑️ Historial limpiado', '#00ff88');
+    showStats() {
+        this.statsScreen.classList.remove('hidden');
+        this.updateStats();
+    }
+    
+    hideStats() {
+        this.statsScreen.classList.add('hidden');
+    }
+    
+    updateStats() {
+        const total = this.getTotalHands();
+        const dragons = this.getTotalDragons();
+        const tigers = this.getTotalTigers();
+        const ties = this.getTotalTies();
+        
+        document.getElementById('statDragons').textContent = dragons;
+        document.getElementById('statTigers').textContent = tigers;
+        document.getElementById('statTies').textContent = ties;
+        document.getElementById('statTotal').textContent = total;
+        
+        if (total > 0) {
+            document.getElementById('statPercDragons').textContent = ((dragons/total)*100).toFixed(1) + '%';
+            document.getElementById('statPercTigers').textContent = ((tigers/total)*100).toFixed(1) + '%';
+            document.getElementById('statPercTies').textContent = ((ties/total)*100).toFixed(1) + '%';
+        }
+        
+        const totalBets = this.wins + this.losses;
+        document.getElementById('statWins').textContent = this.wins;
+        document.getElementById('statLosses').textContent = this.losses;
+        
+        if (totalBets > 0) {
+            document.getElementById('statAccuracy').textContent = ((this.wins/totalBets)*100).toFixed(1) + '%';
         }
     }
     
     updateUI() {
-        this.elements.runningCount.textContent = this.runningCount;
-        this.elements.decksLeft.textContent = this.getDecksRemaining();
-        this.elements.trueCount.textContent = this.getTrueCount();
+        document.getElementById('trueCount').textContent = this.getTrueCount();
+        document.getElementById('totalHands').textContent = this.getTotalHands();
+        document.getElementById('balance').textContent = this.balance > 0 ? '+' + this.balance : this.balance;
         
-        this.elements.handCount.textContent = this.handsPlayed;
-        this.elements.winsCount.textContent = this.wins;
-        this.elements.lossCount.textContent = this.losses;
-        this.elements.balance.textContent = this.balance > 0 ? '+' + this.balance : this.balance;
+        document.getElementById('currentDragons').textContent = this.getTotalDragons();
+        document.getElementById('currentTigers').textContent = this.getTotalTigers();
+        document.getElementById('currentTies').textContent = this.getTotalTies();
         
         this.updateSignal();
     }
     
-    saveToStorage() {
-        const data = {
-            runningCount: this.runningCount,
-            cardsDealt: this.cardsDealt,
-            handsPlayed: this.handsPlayed,
-            wins: this.wins,
-            losses: this.losses,
-            balance: this.balance,
-            timestamp: new Date().toISOString()
-        };
-        localStorage.setItem('dragonTigerData', JSON.stringify(data));
-    }
-    
-    loadFromStorage() {
-        const saved = localStorage.getItem('dragonTigerData');
-        if (saved) {
-            const data = JSON.parse(saved);
-            this.runningCount = data.runningCount || 0;
-            this.cardsDealt = data.cardsDealt || 0;
-            this.handsPlayed = data.handsPlayed || 0;
-            this.wins = data.wins || 0;
-            this.losses = data.losses || 0;
-            this.balance = data.balance || 0;
-        }
-    }
-    
     flashMessage(message, color) {
-        // Crear elemento temporal
         const flash = document.createElement('div');
         flash.style.cssText = `
             position: fixed;

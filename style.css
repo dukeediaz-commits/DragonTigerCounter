@@ -12,6 +12,95 @@ body {
     padding: 10px;
 }
 
+.hidden {
+    display: none !important;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+    border: 3px solid #00ff88;
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+    color: #00ff88;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #00ff88;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.start-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #00ff88, #00cc6a);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+}
+
+.start-btn:active {
+    transform: scale(0.95);
+}
+
 .container {
     max-width: 600px;
     margin: 0 auto;
@@ -307,6 +396,53 @@ body {
     color: #ccc;
 }
 
+/* STATS SCREEN */
+#statsScreen {
+    padding: 20px 0;
+}
+
+.stats-detail {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.stats-detail p {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 0.95rem;
+}
+
+.stats-detail span {
+    font-weight: bold;
+    color: #ffaa00;
+    font-family: 'Courier New', monospace;
+}
+
+.stats-detail hr {
+    border: none;
+    border-top: 1px solid rgba(0, 255, 136, 0.3);
+    margin: 15px 0;
+}
+
+/* GAME SCREEN */
+#gameScreen {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 /* Mobile */
 @media (max-width: 480px) {
     .header h1 {
@@ -324,5 +460,15 @@ body {
 
     .signal {
         font-size: 2.5rem;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .input-group input {
+        padding: 10px;
+        font-size: 0.95rem;
     }
 }
